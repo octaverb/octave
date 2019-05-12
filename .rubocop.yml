@@ -1,0 +1,13 @@
+require: rubocop-performance
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Metrics/LineLength:
+  IgnoredPatterns: ['(\A|\s)#']
+  Exclude:
+    - spec/**/*.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb
