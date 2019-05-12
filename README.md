@@ -34,6 +34,12 @@ Octave.configure do |config|
 end
 ```
 
+If you're not using Rails, you'll need to manually start the Octave agent:
+
+```ruby
+Octave.start
+```
+
 ## Usage
 
 To measure the time it takes to execute a segment of code, Octave provides the
