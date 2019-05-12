@@ -5,7 +5,10 @@ require "octave/dispatcher/logger"
 require "octave/payload"
 require "octave/agent"
 
-require "octave/helpers/controller" if defined?(Rails)
+if defined?(Rails)
+  require "octave/helpers/controller"
+  require "octave/railtie"
+end
 
 module Octave #:nodoc:
   class << self
