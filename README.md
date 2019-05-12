@@ -36,7 +36,97 @@ end
 
 ## Usage
 
-TODO Write this
+To measure the time it takes to execute a segment of code, Octave provides the
+`Octave.measure` method.
+
+```ruby
+Octave.measure("metric-name") do
+  process_credit_card
+end
+```
+
+Octave will then push the measurement to each of your configured dispatchers.
+
+### Using with Rails
+
+Octave will automatically start the agent when integrated with a Rails
+application (no need to call `Octave.start`).
+
+#### Measuring actions
+
+Include the `Octave::Helpers::Controller` module to add a method to log the time
+it takes to execute each action. To log every action in your application:
+
+```ruby
+class ApplicationController < ActionController::Base
+  include Octave::Helpers::Controller
+  
+  around_action :measure_action
+end
+```
+
+That's it! If you want to change the metric name (controller_name.action_name,
+by default), override the `measure_action_name` method.
+
+```ruby
+class ApplicationController < ActionController::Base
+  include Octave::Helpers::Controller
+  
+  around_action :measure_action
+  
+  def measure_action_name
+    "app.#{controller_name}.#{action_name}"
+  end
+end
+```
+
+## Dispatchers
+
+Octave dispatchers receive the measurement payload to transform and persist the
+data. Octave ships with an `Octave::Dispatcher::Logger` dispatcher which simply
+sends the measurement to the configured logger (`Octave.config.logger`).
+
+To configure your dispatchers:
+
+```ruby
+# Send the log output to a StringIO instance
+logger_io = StringIO.new
+
+Octave.configure do |config|
+  config.dispatchers = [
+    Octave::Dispatchers::Logger.new(Logger.new(logger_io))
+  ]
+end
+``` 
+
+## Creating a Dispatcher
+
+Dispatchers only expect two instance methods: `call` and `close`. When a
+measurement is dispatched, Octave sends the payload to each dispatcher's `call`
+method.
+
+When Octave is shutting down, `close` is used to close any open connections,
+sockets, or perform any additional cleanup.
+
+If we're wanting to log each measurement using puts, we can create a puts
+dispatcher:
+
+```ruby
+class PutsDispatcher < Octave::Dispatcher::Base
+  def call(payload)
+    puts "#{payload.name} took #{payload.duration}ms to execute."
+  end
+end
+```
+
+For Octave to use the dispatcher, we'll need to enable it by adding it to the
+array of dispatchers:
+
+```ruby
+Octave.configure do |config|
+  config.dispatchers = [ PutsDispatcher.new ]
+end
+```
 
 ## Contributing
 
