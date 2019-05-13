@@ -42,7 +42,6 @@ GEM
     rubocop-performance (1.2.0)
       rubocop (>= 0.68.0)
     ruby-progressbar (1.10.0)
-    timecop (0.9.1)
     unicode-display_width (1.5.0)
 
 PLATFORMS
@@ -56,7 +55,6 @@ DEPENDENCIES
   rspec (~> 3.0)
   rubocop (~> 0.68.1)
   rubocop-performance (~> 1.2.0)
-  timecop (~> 0.9.1)
 
 BUNDLED WITH
    2.0.1
